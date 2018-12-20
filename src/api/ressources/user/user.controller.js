@@ -10,8 +10,11 @@ export default {
       if (error) {
         return res.status(400).json(error);
       }
-      const user = await User.find({ email: value.email });
-      const authenticated = userService.comparePasswor(
+      const user = await User.findOne({ email: value.email });
+      if (!user) {
+        return res.status(401).json({ success: false, message: 'Unauthorize' });
+      }
+      const authenticated = await userService.comparePassword(
         value.password,
         user.password
       );
@@ -24,8 +27,8 @@ export default {
       const token = jwt.sign({ id: user._id }, config.SECRET_KEY);
       return res.status(200).json({ token });
     } catch (error) {
-      console.log(error);
-      return res.status(500).json(error);
+      // console.log(error);
+      return res.status(500).json({ error });
     }
   },
   async signup(req, res) {
