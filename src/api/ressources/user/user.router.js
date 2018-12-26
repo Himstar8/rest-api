@@ -8,5 +8,5 @@ userRouter.post('/login', userController.login);
 
 // for test purpose
 userRouter.get('/', (req, res, next) => {
-  res.status(200).json({ message: "i'm working" });
+  res.status(200).json({ message: "Test: i'm working" });
 });

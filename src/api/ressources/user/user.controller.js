@@ -5,6 +5,7 @@ import jwt from '../../helpers/jwt';
 export default {
   async signup(req, res) {
     try {
+      console.log(req.body);
       const { value, error } = userService.validateSignup(req.body);
       if (error) {
         return res.status(400).json(error);
@@ -13,12 +14,9 @@ export default {
 
       const user = await User.create({
         email: value.email,
-        firstName: value.firstName,
-        lastName: value.lastName,
-        password: encryptedPass,
-        role: value.role || STANDARD_ROLE
+        password: encryptedPass
       });
-      return res.json({ success: true });
+      return res.status(200).json({ success: true });
     } catch (err) {
       console.error(err);
       return res.status(500).send(err);
