@@ -69,5 +69,19 @@ export default {
       // console.error(err);
       return res.status(500).send(err);
     }
+  },
+
+  async checkEmail(req, res) {
+    try {
+      console.log(req.body.email);
+      const user = await User.findOne({ email: req.body.email });
+      if (user) {
+        return res.json({ message: 'This email is already taken' });
+      }
+      return res.send();
+    } catch (error) {
+      // console.error(err);
+      return res.status(500).send(err);
+    }
   }
 };
