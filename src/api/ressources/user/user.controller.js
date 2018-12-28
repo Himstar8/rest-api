@@ -29,7 +29,6 @@ export default {
       if (error) {
         return res.status(400).json(error);
       }
-      console.log(value);
       const user = await User.findOne({ email: value.email });
       if (!user) {
         return res.status(401).json({ error: { message: 'unauthorized' } });
@@ -44,6 +43,29 @@ export default {
       const token = jwt.issue({ id: user._id }, '1d');
       return res.json({ token });
     } catch (err) {
+      // console.error(err);
+      return res.status(500).send(err);
+    }
+  },
+
+  // return an user's liked shops
+  getlikedShops(req, res) {
+    try {
+      const user = req.user;
+
+      user
+        .populate({
+          path: 'likedShops'
+        })
+        .execPopulate()
+        .then(function(user) {
+          return res.json({
+            shops: user.likedShops.map(function(item) {
+              return item.toJSON();
+            })
+          });
+        });
+    } catch (error) {
       // console.error(err);
       return res.status(500).send(err);
     }

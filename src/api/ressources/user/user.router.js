@@ -1,12 +1,13 @@
 import express from 'express';
 import userController from './user.controller';
+import passport from 'passport';
 
 export const userRouter = express.Router();
 
 userRouter.post('/register', userController.signup);
 userRouter.post('/login', userController.login);
-
-// for test purpose
-userRouter.get('/', (req, res, next) => {
-  res.status(200).json({ message: "Test: i'm working" });
-});
+userRouter.get(
+  '/shops',
+  passport.authenticate('jwt', { session: false }),
+  userController.getlikedShops
+);

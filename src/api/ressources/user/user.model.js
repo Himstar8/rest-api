@@ -13,11 +13,24 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  shops: {
-    type: Array,
-    default: []
-  }
+  likedShops: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Shop' },
+    { timestamps: true }
+  ]
 });
+
+userSchema.methods.addShop = function(id) {
+  if (this.likedShops.indexOf(id) === -1) {
+    this.likedShops.push(id);
+  }
+
+  return this.save();
+};
+
+userSchema.methods.removeShop = function(id) {
+  this.likedShops.remove(id);
+  return this.save();
+};
 
 userSchema.plugin(UniqueValidator, { message: 'is already taken.' });
 
