@@ -1,7 +1,7 @@
 export const config = {
   production: {},
   developement: {
-    MONGO_URI: 'mongodb://root:root12345@ds023315.mlab.com:23315/rest-api',
+    MONGO_URI: '', // add Mongo URI here
     SECRET_KEY: 'secret key'
   }
 };
