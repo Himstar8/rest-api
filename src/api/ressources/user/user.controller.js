@@ -73,15 +73,15 @@ export default {
 
   async checkEmail(req, res) {
     try {
-      console.log(req.body.email);
+      console.log(req.body);
       const user = await User.findOne({ email: req.body.email });
       if (user) {
-        return res.json({ message: 'This email is already taken' });
+        return res.status(403).json({ message: 'This email is already taken' });
       }
-      return res.send();
+      return res.status(200).send();
     } catch (error) {
       // console.error(err);
-      return res.status(500).send(err);
+      return res.status(500).send(error);
     }
   }
 };

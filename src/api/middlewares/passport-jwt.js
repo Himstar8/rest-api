@@ -7,7 +7,7 @@ import { config } from '../../config/config';
 export const configJWTStrategy = () => {
   const options = {
     jwtFromRequest: PassportJWT.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: config.developement.SECRET_KEY
+    secretOrKey: process.env.SECRET_KEY
   };
   Passport.use(
     new PassportJWT.Strategy(options, (payload, done) => {

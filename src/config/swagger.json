@@ -1,0 +1,323 @@
+{
+  "title": "Nearby Shops API Documentation",
+  "openapi": "3.0.0",
+  "description": "A basic restfull api for a web app call Nearby Shops",
+  "license": {
+    "name": "MIT",
+    "url": "https://opensource.org/licenses/MIT"
+  },
+  "version": "1.0.0",
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Local server"
+    },
+    {
+      "url": "https://nearby-shops-backend.herokuapp.com/api",
+      "description": "Heroku hosted API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "API for users endpoints"
+    },
+    {
+      "name": "Shops",
+      "description": "API for shops endpoints"
+    }
+  ],
+  "schemes": ["http", "https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/users/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "API endpoint to create User",
+        "description": "Create a new user in database",
+        "requestBody": {
+          "description": "Input to register new user",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        },
+        "produces": ["application/json"],
+        "responses": {
+          "201": {
+            "description": "New user created",
+            "schema": {
+              "$ref": "#/definitions/RegisterResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "API endpoint to login into an existing account",
+        "description": "Login user",
+        "requestBody": {
+          "description": "Input to login an user",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        },
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User has successfully loggedIn",
+            "schema": {
+              "$ref": "#definitions/LoginResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/email": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "API endpoint to check is a given email is taken or not",
+        "description": "Check email uniqueness",
+        "requestBody": {
+          "description": "Enter the email ti be checked",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "There is no account associated with this email"
+          },
+          "403": {
+            "description": "This email is already taken",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/shops": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "API endpoint to get user's liked shops",
+        "description": "Get liked shops",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "All user's preferred Shops",
+            "schema": {
+              "$ref": "#definition/Shops"
+            }
+          },
+          "401": {
+            "description": "Access token is missing or invalid"
+          }
+        }
+      }
+    },
+    "/shops/add": {
+      "post": {
+        "tags": ["Shops"],
+        "summary": "API endpoint to add a shop to user's preferred list",
+        "description": "Add liked shop",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "shop to add to user's preferred list",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Shop"
+              }
+            }
+          }
+        },
+        "produces": ["application/json"],
+        "responses": {
+          "201": {
+            "description": "Shop successfully added",
+            "schema": {
+              "properties": {
+                "success": "boolean"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request / Invalid input"
+          },
+          "401": {
+            "description": "Access token is missing or invalid"
+          }
+        }
+      }
+    },
+    "/shops/remove/{id}": {
+      "delete": {
+        "tags": ["Shops"],
+        "summary": "API endpoint to remove a shop from user's preferred list",
+        "description": "Remove liked shop",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "shop id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Shop successfully removed",
+            "schema": {
+              "properties": {
+                "success": "boolean"
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing or invalid"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Users": {
+      "required": ["email", "password"],
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "shops": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "RegisterResponse": {
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "LoginResponse": {
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "Shop": {
+      "required": ["name", "place_id", "photo_reference"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "place_id": {
+          "type": "string"
+        },
+        "photo_reference": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "number"
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "vicinity": {
+          "type": "string"
+        }
+      }
+    },
+    "Shops": {
+      "docs": {
+        "type": "array",
+        "$ref": "#/definitions/Shop"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

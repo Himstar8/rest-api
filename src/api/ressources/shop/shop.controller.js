@@ -17,7 +17,6 @@ export default {
           if (error && error.details) {
             return res.status(400).json({ error });
           }
-          console.log('test');
           Shop.create(value)
             .then(shop => {
               return user.addShop(shop._id);
@@ -41,7 +40,7 @@ export default {
         return res.status(200).json({ success: true });
       });
     } catch (error) {
-      return res.status(500).send(err);
+      return res.status(500).send(error);
     }
   }
 };

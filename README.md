@@ -6,7 +6,7 @@ To get the Node server running locally:
 
 - Clone this repo
 - `npm install` to install all required dependencies
-- Edit `src/config/config.js` to add mongodb URI
+- Create a `.env` file and add MONGO_URI and SECRET_KEY variables
 - `npm run dev` to start the local server
 
 ## Dependencies
